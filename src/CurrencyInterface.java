@@ -2,8 +2,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashSet;
+import java.util.Set;
+import java.util.HashMap;
+import com.google.gson.Gson;
 
 public class CurrencyInterface {
 
@@ -12,8 +15,8 @@ public class CurrencyInterface {
     private static final String API_URL
             = "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/";
 
-    private HashSet<String> currencies;
-    private String rawCurrencies;
+    private Set<String> currencies;
+    private HashMap<String, String> currencyCodes;
 
     static {
         try {
@@ -23,27 +26,34 @@ public class CurrencyInterface {
         }
     }
 
-    private CurrencyInterface() throws Exception {
-        this.rawCurrencies = FetchCurrenciesJSONRaw();
+    private CurrencyInterface() throws IOException {
+        currencyCodes = FetchCurrencies();
+        currencies = currencyCodes.keySet();
     }
 
-    private String FetchCurrenciesJSONRaw() throws Exception {
+    private HashMap<String, String> FetchCurrencies() throws IOException {
+        // get HTTP Request
         StringBuilder result = new StringBuilder();
         URL url = new URL(API_URL + "currencies.json");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
 
+        // Read raw JSON String
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader((conn.getInputStream())))) {
             for (String line; (line = reader.readLine()) != null; ) {
                 result.append(line);
             }
         }
-        return result.toString();
+        String rawJson = result.toString();
+
+        // Convert to HashMap
+        Gson gson = new Gson();
+        return gson.fromJson(rawJson, HashMap.class);
     }
 
     public String GetCurrencies() {
-        return rawCurrencies;
+        return currencies.toString();
     }
 
     public static CurrencyInterface getInstance() {
