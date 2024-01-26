@@ -4,7 +4,7 @@ public class CurrencyApp {
     public static void main(String[] args) {
         // Create Application Frame and Run
         SwingUtilities.invokeLater(() -> {
-            CurrencyFrame frame = new CurrencyFrame();
+            AppFrame frame = new AppFrame();
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setVisible(true);
         });
