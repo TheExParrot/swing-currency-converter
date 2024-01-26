@@ -8,5 +8,8 @@ public class CurrencyApp {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setVisible(true);
         });
+
+        String out = CurrencyInterface.getInstance().GetCurrencies();
+        System.out.println(out);
     }
 }
