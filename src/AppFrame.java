@@ -18,7 +18,7 @@ public class AppFrame extends JFrame {
         topPanel.add(titleLabel);
 
         // Add Currency Widget
-        CurrencyWidget currencyWidget = new CurrencyWidget();
+        MultiCurrencyManager currencyWidget = new MultiCurrencyManager();
 
         // Set up the main content pane with BorderLayout
         setLayout(new BorderLayout());
