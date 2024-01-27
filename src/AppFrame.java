@@ -12,6 +12,8 @@ public class AppFrame extends JFrame {
         setTitle("Currency Converter");
         setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
+        setFocusTraversalPolicy(new LayoutFocusTraversalPolicy());
+
         // Add Application Label
         JPanel topPanel = new JPanel();
         JLabel titleLabel = new JLabel("Currency Converter");

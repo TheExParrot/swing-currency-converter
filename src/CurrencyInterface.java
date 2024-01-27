@@ -3,7 +3,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.security.KeyPair;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Set;
 import java.util.HashMap;
 import com.google.gson.Gson;
@@ -15,8 +16,10 @@ public class CurrencyInterface {
     private static final String API_URL
             = "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/";
 
-    private Set<String> currencies;
+    private Set<String> currenciesSet;
+    private ArrayList<String> currenciesNeatArrayList;
     private HashMap<String, String> currencyCodes;
+    private HashMap<String, String> neatNameToCode;
 
     private HashMap<String, Double> conversionCache;
 
@@ -29,8 +32,26 @@ public class CurrencyInterface {
     }
 
     private CurrencyInterface() throws IOException {
+        // fetch currency codes & names
         currencyCodes = fetchCurrencies();
-        currencies = currencyCodes.keySet();
+        currenciesSet = currencyCodes.keySet();
+
+        // setup neat names list
+        currenciesNeatArrayList = new ArrayList<String>();
+        neatNameToCode = new HashMap<String, String>();
+        for (String code: currenciesSet) {
+            String curName;
+            if (currencyCodes.get(code).equals("")) {
+                curName = code.toUpperCase();
+            } else {
+                curName =  code.toUpperCase() + " (" + currencyCodes.get(code) + ")";
+            }
+            currenciesNeatArrayList.add(curName);
+            neatNameToCode.put(curName, code);
+        }
+        Collections.sort(currenciesNeatArrayList);
+
+        // initialise conversion cache
         conversionCache = new HashMap<>();
     }
 
@@ -55,8 +76,8 @@ public class CurrencyInterface {
         return gson.fromJson(rawJson, HashMap.class);
     }
 
-    public String getCurrencies() {
-        return currencies.toString();
+    public ArrayList<String> getCurrenciesNeatArray() {
+        return currenciesNeatArrayList;
     }
 
     public static CurrencyInterface getInstance() {
@@ -65,7 +86,7 @@ public class CurrencyInterface {
 
     public double convertCurrency(String src, double amount, String out) throws IOException {
         // check if both currencies are valid currencies, if not return negative value
-        if (!currencies.contains(src) || !currencies.contains(out)) {
+        if (!currenciesSet.contains(src) || !currenciesSet.contains(out)) {
             return -1.0;
         }
 
