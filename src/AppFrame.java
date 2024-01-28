@@ -18,6 +18,7 @@ public class AppFrame extends JFrame {
         JPanel topPanel = new JPanel();
         JLabel titleLabel = new JLabel("Currency Converter");
         topPanel.add(titleLabel);
+        titleLabel.setFont(new Font("Serif", Font.BOLD, 36));
 
         // Add Currency Widget
         MultiCurrencyManager currencyWidget = new MultiCurrencyManager();
