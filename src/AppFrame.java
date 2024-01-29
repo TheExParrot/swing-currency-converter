@@ -4,7 +4,7 @@ import java.awt.*;
 public class AppFrame extends JFrame {
 
     private final static int WINDOW_WIDTH = 800;
-    private final static int WINDOW_HEIGHT = 600;
+    private final static int WINDOW_HEIGHT = 420;
 
     /* Constructor */
     public AppFrame() {

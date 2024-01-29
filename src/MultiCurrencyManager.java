@@ -4,7 +4,7 @@ import java.io.IOException;
 
 public class MultiCurrencyManager extends JPanel {
 
-    private static final int NUM_CURRENCIES = 4;
+    private static final int NUM_CURRENCIES = 2;
     private final CurrencyWidget[] currencyWidgets;
 
     public MultiCurrencyManager() {

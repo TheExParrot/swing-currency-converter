@@ -21,7 +21,7 @@ public class CurrencyWidget extends JPanel {
     public CurrencyWidget(MultiCurrencyManager manager) {
         this.manager = manager;
 
-        setBorder(new EmptyBorder(5, 20, 200, 20));
+        setBorder(new EmptyBorder(5, 20, 50000, 20));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         // Combo Box for Currency Selection
