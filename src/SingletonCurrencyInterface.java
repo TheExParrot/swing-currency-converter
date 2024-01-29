@@ -9,9 +9,9 @@ import java.util.Set;
 import java.util.HashMap;
 import com.google.gson.Gson;
 
-public class CurrencyInterface {
+public class SingletonCurrencyInterface {
 
-    private static final CurrencyInterface instance;
+    private static final SingletonCurrencyInterface instance;
 
     private static final String API_URL
             = "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/";
@@ -25,13 +25,13 @@ public class CurrencyInterface {
 
     static {
         try {
-            instance = new CurrencyInterface();
+            instance = new SingletonCurrencyInterface();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private CurrencyInterface() throws IOException {
+    private SingletonCurrencyInterface() throws IOException {
         // fetch currency codes & names
         currencyCodes = fetchCurrencies();
         currenciesSet = currencyCodes.keySet();
@@ -80,7 +80,11 @@ public class CurrencyInterface {
         return currenciesNeatArrayList;
     }
 
-    public static CurrencyInterface getInstance() {
+    public String getCodeFromNeat(String neat) {
+        return neatNameToCode.get(neat);
+    }
+
+    public static SingletonCurrencyInterface getInstance() {
         return instance;
     }
 
