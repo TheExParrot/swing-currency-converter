@@ -31,7 +31,7 @@ public class SingletonCurrencyInterface {
         }
     }
 
-    private SingletonCurrencyInterface() throws IOException {
+    private SingletonCurrencyInterface() {
         // fetch currency codes & names
         currencyCodes = fetchCurrencies();
         currenciesSet = currencyCodes.keySet();
@@ -55,25 +55,30 @@ public class SingletonCurrencyInterface {
         conversionCache = new HashMap<>();
     }
 
-    private HashMap<String, String> fetchCurrencies() throws IOException {
+    private HashMap<String, String> fetchCurrencies() {
         // get HTTP Request
-        StringBuilder result = new StringBuilder();
-        URL url = new URL(API_URL + "currencies.json");
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
+        try {
+            StringBuilder result = new StringBuilder();
+            URL url = new URL(API_URL + "currencies.json");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
 
-        // Read raw JSON String
-        try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader((conn.getInputStream())))) {
-            for (String line; (line = reader.readLine()) != null; ) {
-                result.append(line);
+            // Read raw JSON String
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader((conn.getInputStream())))) {
+                for (String line; (line = reader.readLine()) != null; ) {
+                    result.append(line);
+                }
             }
-        }
-        String rawJson = result.toString();
+            String rawJson = result.toString();
 
-        // Convert to HashMap
-        Gson gson = new Gson();
-        return gson.fromJson(rawJson, HashMap.class);
+            // Convert to HashMap
+            Gson gson = new Gson();
+            return gson.fromJson(rawJson, HashMap.class);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+            return null;
+        }
     }
 
     public ArrayList<String> getCurrenciesNeatArray() {
@@ -88,7 +93,7 @@ public class SingletonCurrencyInterface {
         return instance;
     }
 
-    public double convertCurrency(String src, double amount, String out) throws IOException {
+    public double convertCurrency(String src, double amount, String out) {
         // check if both currencies are valid currencies, if not return negative value
         if (!currenciesSet.contains(src) || !currenciesSet.contains(out)) {
             return -1.0;
@@ -109,26 +114,31 @@ public class SingletonCurrencyInterface {
         return amount * conversionRate;
     }
 
-    private double fetchConversionRate(String src, String out) throws IOException {
-        // get HTTP Request
-        StringBuilder result = new StringBuilder();
-        URL url = new URL(API_URL + "currencies/" + src + "/" + out + ".json");
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
+    private double fetchConversionRate(String src, String out) {
+        try {
+            // get HTTP Request
+            StringBuilder result = new StringBuilder();
+            URL url = new URL(API_URL + "currencies/" + src + "/" + out + ".json");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
 
-        // Read raw JSON String
-        try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader((conn.getInputStream())))) {
-            for (String line; (line = reader.readLine()) != null; ) {
-                result.append(line);
+            // Read raw JSON String
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader((conn.getInputStream())))) {
+                for (String line; (line = reader.readLine()) != null; ) {
+                    result.append(line);
+                }
             }
-        }
-        String rawJson = result.toString();
+            String rawJson = result.toString();
 
-        // Convert to HashMap and return result rate
-        Gson gson = new Gson();
-        HashMap<String, Double> mapResult = gson.fromJson(rawJson, HashMap.class);
-        return mapResult.get(out);
+            // Convert to HashMap and return result rate
+            Gson gson = new Gson();
+            HashMap<String, Double> mapResult = gson.fromJson(rawJson, HashMap.class);
+            return mapResult.get(out);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return -1.0;
+        }
     }
 
 }
